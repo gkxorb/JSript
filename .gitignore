@@ -1,0 +1,13 @@
+#vscode ignore#
+.vscode/
+
+.gradle/
+
+.idea/
+nps-mcs.userlibraries
+
+/comm/build/
+/comm/out/
+/comm/bin/
+/comm/.settings/
+/comm/logs/
