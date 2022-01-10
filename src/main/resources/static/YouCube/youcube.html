@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouCube - The Blog for Cube Puzzlers</title>
+    <script type="text/javascript">
+
+        // 클래스 선언!
+        function Blog(body, date){
+            this.body = body;
+            this.date = date;
+        }
+
+        const blog = [new Blog("Got the new cube I ordered. It's a real pearl.", new Date("08/14/2008")),
+            new Blog("Solved the new cube but of course, now I'm bored and shopping for a new one.", new Date("08/19/2008")),
+            new Blog("Managed to get a headache toiling over the new cube. Gotta nap.", new Date("08/16/2008")),
+            new Blog("Found a 7x7x7 cube for sale online. Yikes! That one could be a beast.",new Date("08/21/2008")) ];
+
+        /**
+         * 블로그 데이터 표현
+         * @param numEntries
+         */
+        function showBlog(numEntries){
+
+            try {
+
+                // 배열 정렬. desc
+                blog.sort(function (blog1, blog2){ return blog2.date - blog1.date });
+
+                if (!numEntries || numEntries > blog.length)
+                    numEntries = blog.length;
+
+                let blogText = "";
+                for (let i = 0; i < numEntries; i++) {
+                    // Use a gray background for every other blog entry
+                    if (i % 2 === 0)
+                        blogText += "<p style='background-color:#EEEEEE'>";
+                    else
+                        blogText += "<p>";
+
+                    // Generate the formatted blog HTML code
+                    blogText += "<strong>" + blog[i].date + "</strong><br />" + blog[i].body + "</p>";
+                    blogText += "<strong>" + blog[i].date.getMonth() +"/" + blog[i].date.getDate() + "/" + blog[i].date.getFullYear() + "</strong><br />" + blog[i].body + "</p>";
+                }
+
+                document.getElementById("blog").innerHTML = blogText;
+            }catch (e) {
+                alert(e.message);
+            }
+        }
+
+        /**
+         * 조건 일치 블로그 데이터 표현. <대상 blog.body>
+         */
+        function searchBlogBody(){
+            try {
+                let searchText = document.getElementById("tbxBodyText").value;
+                /*for (let key in blog) {
+                    console.log(key + blog[key].body);
+                }*/
+
+                let dataIndex = 0;
+                let blogText = "";
+                for (let oBlog of blog) {
+                    console.log(oBlog.body);
+                    if(oBlog.body.indexOf(searchText) >= 0){
+                        //alert(oBlog.body);
+                        if (dataIndex % 2 === 0)
+                            blogText += "<p style='background-color:#EEEEEE'>";
+                        else
+                            blogText += "<p>";
+                        blogText += "<strong>" + oBlog.date + "</strong><br />" + oBlog.body + "</p>";
+                        blogText += "<strong>" + oBlog.date.getMonth() +"/" + oBlog.date.getDate() + "/" + oBlog.date.getFullYear() + "</strong><br />" + oBlog.body + "</p>";
+                        dataIndex += 1;
+                    }
+                }
+
+                document.getElementById("blog").innerHTML = "";
+                document.getElementById("blog").innerHTML = blogText;
+            }catch (e){
+                alert(e.message);
+            }
+        }
+
+        function showRandomBlog(){
+
+            let blogText = "";
+            let randomIndex = Math.floor(Math.random() * blog.length);
+
+            blogText += "<strong>" + blog[randomIndex].date + "</strong><br />" + blog[randomIndex].body + "</p>";
+            blogText += "<strong>" + blog[randomIndex].date.getMonth() +"/" + blog[randomIndex].date.getDate() + "/" + blog[randomIndex].date.getFullYear() + "</strong><br />" + blog[randomIndex].body + "</p>";
+
+            document.getElementById("blog").innerHTML = "";
+            document.getElementById("blog").innerHTML = blogText;
+        }
+
+    </script>
+</head>
+<body onload="showBlog(5);">
+    <h3>YouCube - The Blog for Cube Puzzlers</h3>
+    <img src="cube.png" alt=이미지대체텍스트>
+    <label for="tbxBodyText"></label><input type="text" id="tbxBodyText" value="">
+    <input type="button" id="btnBodyText" value="Search Body Text." onclick="searchBlogBody()">
+    <div id="blog"></div>
+    <input type="button" id="btnShowAll" value="Show all blog entries." onclick="showBlog()">
+    <input type="button" id="btnRandomShow" value="Show Random blog entries." onclick="showRandomBlog()">
+</body>
+</html>

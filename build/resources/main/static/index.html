@@ -3,8 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="text/javascript" src="cookie.js"></script>
+    <script type="text/javascript">
+        let userName;
+
+        function touchRock(){
+
+            if(userName){
+                alert("I like the attention, '" +userName+ "'. Thank you.");
+            }else {
+                userName = prompt("What is your name?");
+                if (userName) {
+                    alert("It is good to meet you, '" + userName + "'.");
+                }
+
+                if(userName && navigator.cookieEnabled){                    // Cookie 사용 가능 여부.
+                    writeCookie("irock_username", userName, 1);             // Cookie 등록 (5일 동안)
+                }else{
+                    alert("Cookies aren't supported/enabled in your browser, which means I won't remember you later. I'm sorry.");
+                }
+            }
+
+            document.getElementById("rockImg").src = "rock_happy.png";
+            setTimeout("timeoutHandler();", 5000);
+        }
+
+        function  timeoutHandler(){
+            document.getElementById('rockImg').src = 'rock.png';    // 이미지 변경.
+            userName = null;                                        // Cookie 에서 읽은 데이터 초기화
+        }
+
+        function resizeRock(){
+            // <!DOCTYPE html> 명시하는 경우 정상적인 높이가 확인 되지 않음..  → document.documentElement 로 변경하여 기능 구성.
+            //document.getElementById("rockImg").style.height = (document.body.clientHeight - 100) * 0.9 + "px";
+            document.getElementById("rockImg").style.height = (document.documentElement.clientHeight - 100) * 0.9 + "px";
+        }
+
+        function greetUser() {
+            if(navigator.cookieEnabled){
+                userName = readCookie("irock_username");                    // Cookie 로드
+            }
+
+            if(userName){
+                alert("Hello, " + userName + ", I missed you.");
+            }else{
+                alert("Hello, I am your pet rock.");
+            }
+        }
+    </script>
 </head>
-<body>
-    Teat Page 222
+<body onload="resizeRock(); greetUser();" onresize="resizeRock();">
+    <div style="margin-top:100px; text-align: center">
+        <img id="rockImg" src="rock.png" alt="iRock" style="cursor:pointer" onclick="touchRock();" />
+    </div>
 </body>
 </html>

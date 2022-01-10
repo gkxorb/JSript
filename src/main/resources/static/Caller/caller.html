@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BSI Case 2: Winning Caller</title>
+
+    <script type="text/javascript" src="debug.js"></script>
+    <script type="text/javascript">
+
+        let _console;
+        let callNum;
+
+        // onLoad Event 를 이용한 Object 초기화!
+        function initObject(){
+            _console = new DebugConsole();
+            callNum = 0
+        }
+
+        function checkWinner(form, caller, winningNum) {
+            try{
+
+                ++callNum;
+                _console.displayMsg("CallNum : " + callNum);
+
+                // Check for a winner
+                if (callNum === winningNum) {
+                    alert(caller + ", caller number"  + callNum + "...today's winner!");
+                    form.submit();
+                    callNum = 0;
+                }
+                else {
+                    // Reset the caller field for the next caller
+                    let callerField = document.getElementById('caller');
+                    callerField.value = "Next caller ("+callNum+")";
+                    callerField.focus();
+                    callerField.select();
+                }
+            }catch (e) {
+                alert(e.message);
+            }
+        }
+    </script>
+</head>
+<body onload="initObject();">
+    <form name="callform" action="radiocall.php" method="POST">
+        <img src="radio.png" alt="radio" />
+        <label for="caller">Caller name: </label><input id="caller" name="caller" type="text" value="Next Caller(0)"/>
+        <input type="button" value="Call"
+               onclick="checkWinner(this.form, document.getElementById('caller').value, 7)" />
+    </form>
+</body>
+</html>

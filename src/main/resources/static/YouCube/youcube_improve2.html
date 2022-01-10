@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouCube - The Blog for Cube Puzzlers</title>
+    <script type="text/javascript">
+
+        const blog = [new Blog("Got the new cube I ordered. It's a real pearl.", new Date("08/14/2008")),
+            new Blog("Solved the new cube but of course, now I'm bored and shopping for a new one.", new Date("08/19/2008")),
+            new Blog("Managed to get a headache toiling over the new cube. Gotta nap.", new Date("08/16/2008")),
+            new Blog("Found a 7x7x7 cube for sale online. Yikes! That one could be a beast.",new Date("08/21/2008")),
+            new Blog("Met up with some fellow cubers to discuss the prospect of a 7x7x7 cube. Mixed feelings.", new Date("08/29/2008")),
+            new Blog("Went ahead and ordered the scary 7x7x7 cube. Starting a mental exercise regimen to prepare.", new Date("09/01/2008")),
+            new Blog("Attended a rally outside of a local toy store that stopped carrying cube puzzles. Power to the puzzlers!", new Date("09/03/2008")),
+            new Blog("Got the new 7x7x7 cube. Could be my last blog post for a while...", new Date("09/05/2008")),
+            new Blog("Wow, it took me a couple of weeks but the new cube is finally solved!", new Date("09/19/2008"), "cube777.png") ];
+
+        Date.prototype.getShortFormat = function (){
+            return (this.getFullYear() + 1) + "/" + this.getDate() + "/" + this.getMonth()
+        }
+
+        Date.prototype.getDateString = function (){
+            let mm = this.getMonth() + 1; // getMonth() is zero-based
+            let dd = this.getDate();
+
+            return [this.getFullYear(),
+                (mm>9 ? '' : '0') + mm,
+                (dd>9 ? '' : '0') + dd
+            ].join('-');
+        }
+
+        // 클래스 선언! - 기능 향상! - 클래스 화. (Prototype 이용)
+        function Blog(body, date, image){
+            this.body = body;
+            this.date = date;
+            this.image = image;
+        }
+
+        /**
+         * 데이터 문자열 취득
+         */
+        Blog.prototype.toString = function (){
+
+            return "[" + this.date.getShortFormat() + "] " + this.body;
+        }
+
+        /**
+         * 조건 일치 HTML 취득
+         */
+        Blog.prototype.toHtmlText = function (evenOdd, searchText){
+
+            let blogText = "";
+
+            if(this.body.indexOf(searchText) < 0)
+                return blogText;
+
+            blogText = evenOdd ? "<p style='background-color:#EEEEEE'>" : "";
+
+            // Generate the formatted blog HTML code
+            if(this.image) {
+                blogText += "<strong>" + this.date.getDateString() + "</strong><br />" + this.body + "</p>";
+                blogText += "<strong>" + this.date.getShortFormat() + "</strong><br />" +
+                            "<table><tr>" +
+                            "<td><img src='"+this.image+"' alt='"+this.image+"'></td>" +
+                            "<td style='vertical-align:top'>"+this.body+"</td>" +
+                            "</tr></table>"
+            }else{
+                blogText += "<strong>" + this.date.getDateString() + "</strong><br />" + this.body + "</p>";
+                blogText += "<strong>" + this.date.getShortFormat() + "</strong><br />" + this.body + "<br /><em>" + this.signature + "</em></p>";
+            }
+
+            return blogText;
+        }
+
+        Blog.prototype.signature = "by HTG";
+
+        Blog.sort = function (blog1, blog2){
+            return blog2.date - blog1.date;
+        }
+
+        /**
+         * 블로그 데이터 표현
+         * @param numEntries
+         */
+        function showBlog(numEntries){
+
+            try {
+
+                // 배열 정렬. desc
+                blog.sort(Blog.sort);
+
+                if (!numEntries || numEntries > blog.length)
+                    numEntries = blog.length;
+
+                let blogText = "";
+                for (let i = 0; i < numEntries; i++) {
+                    blogText += blog[i].toHtmlText(i%2 === 0, "");
+                }
+
+                document.getElementById("blog").innerHTML = blogText;
+            }catch (e) {
+                alert(e.message);
+            }
+        }
+
+        /**
+         * 조건 일치 블로그 데이터 표현.
+         */
+        function searchBlogBody(){
+            try {
+                let searchText = document.getElementById("tbxBodyText").value;
+
+                let dataIndex = 0;
+                let blogText = "";
+                for (let oBlog of blog) {
+
+                    blogText += oBlog.toHtmlText(dataIndex, searchText);
+                    if(blogText !== ""){
+                        dataIndex += 1;
+                    }
+                }
+
+                document.getElementById("blog").innerHTML = "";
+                document.getElementById("blog").innerHTML = blogText;
+            }catch (e){
+                alert(e.message);
+            }
+        }
+
+    </script>
+</head>
+<body onload="showBlog(5);">
+    <h3>YouCube - The Blog for Cube Puzzlers</h3>
+    <img src="cube.png" alt=이미지대체텍스트>
+    <input type="text" id="tbxBodyText" value="">
+    <input type="button" id="btnBodyText" value="Search Body Text." onclick="searchBlogBody()">
+    <div id="blog"></div>
+    <input type="button" id="btnShowAll" value="Show all blog entries." onclick="showBlog()">
+</body>
+</html>
